@@ -1,0 +1,9 @@
+FACTURA DE PROMESA DE PAGO
+
+Cliente: Sector Hogar
+Empresa: Netlife
+
+Estado: Deuda Pendiente
+Fecha de compromiso: 20/03/2026
+
+Gracias por su compromiso.
