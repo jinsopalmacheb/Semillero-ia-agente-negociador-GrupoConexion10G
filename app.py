@@ -1,78 +1,80 @@
 from flask import Flask, render_template, request
-from datetime import datetime
-from dateutil import parser
-import os
 import re
+from datetime import datetime
 
 app = Flask(__name__)
 
-# -------------------------
-# FUNCIONES DEL AGENTE IA
-# -------------------------
+# ==============================
+# DICCIONARIO DE MESES
+# ==============================
+MESES = {
+    "enero": "01", "febrero": "02", "marzo": "03",
+    "abril": "04", "mayo": "05", "junio": "06",
+    "julio": "07", "agosto": "08", "septiembre": "09",
+    "octubre": "10", "noviembre": "11", "diciembre": "12"
+}
 
-def detectar_intencion(mensaje):
+# ==============================
+# FUNCIÓN DETECTAR FECHA
+# ==============================
+def detectar_fecha_texto(mensaje):
     mensaje = mensaje.lower()
 
-    if any(palabra in mensaje for palabra in ["pagar", "pago", "cancelar deuda", "voy a pagar", "puedo pagar"]):
-        return "Promesa de pago"
+    # Formato numérico: 20/03/2026 o 20-03-2026
+    match_numerico = re.search(r"(\d{1,2})[/-](\d{1,2})[/-](\d{4})", mensaje)
+    if match_numerico:
+        dia, mes, anio = match_numerico.groups()
+        return f"{dia.zfill(2)}/{mes.zfill(2)}/{anio}"
 
-    if any(palabra in mensaje for palabra in ["cancelar servicio", "dar de baja", "cancelar contrato"]):
-        return "Cancelación"
+    # Formato texto: 20 de marzo
+    match_texto = re.search(r"(\d{1,2})\s+de\s+([a-záéíóú]+)", mensaje)
+    if match_texto:
+        dia, mes_texto = match_texto.groups()
+        mes_texto = mes_texto.lower()
 
-    return "Sin intención clara"
+        if mes_texto in MESES:
+            mes = MESES[mes_texto]
+            anio = datetime.now().year
+            return f"{dia.zfill(2)}/{mes}/{anio}"
 
+    return "No detectada"
 
-def detectar_fecha(mensaje):
-    try:
-        # Buscar fechas tipo "15 de marzo", "20/03/2026", etc.
-        match = re.search(r"\d{1,2}.*?(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)", mensaje.lower())
-        if match:
-            fecha = parser.parse(match.group(), dayfirst=True)
-            return fecha.strftime("%d/%m/%Y")
-
-        # Intentar detección automática
-        fecha = parser.parse(mensaje, fuzzy=True, dayfirst=True)
-        return fecha.strftime("%d/%m/%Y")
-
-    except:
-        return "No detectada"
-
-
-# -------------------------
-# RUTAS WEB
-# -------------------------
-
+# ==============================
+# RUTA PRINCIPAL
+# ==============================
 @app.route("/", methods=["GET", "POST"])
 def index():
     resultado = None
 
     if request.method == "POST":
-        mensaje = request.form["mensaje"]
+        mensaje_usuario = request.form.get("mensaje", "")
 
-        intencion = detectar_intencion(mensaje)
-        fecha = detectar_fecha(mensaje)
+        # Lógica del agente
+        cliente = "Sector Hogar"
+        sector = ""
+        estado = "Deuda Pendiente"
+
+        if "pagar" in mensaje_usuario.lower():
+            intencion = "Promesa de pago"
+        else:
+            intencion = "Sin intención clara"
+
+        fecha_pago = detectar_fecha_texto(mensaje_usuario)
 
         resultado = {
-            "cliente": "Sector Hogar",
+            "cliente": cliente,
+            "sector": sector,
+            "estado": estado,
             "intencion": intencion,
-            "fecha": fecha
+            "fecha_pago": fecha_pago
         }
-
-        # Guardar promesa tipo factura
-        with open("factura_promesa.txt", "w", encoding="utf-8") as f:
-            f.write(
-                f"Cliente: Sector Hogar\n"
-                f"DEUDA PENDIENTE\n"
-                f"Promesa de pago: {fecha}\n"
-            )
 
     return render_template("index.html", resultado=resultado)
 
-
-# -------------------------
-# CONFIGURACIÓN PARA RENDER
-# -------------------------
-
+# ==============================
+# EJECUCIÓN (RENDER)
+# ==============================
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    import os
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
