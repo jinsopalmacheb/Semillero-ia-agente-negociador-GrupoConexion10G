@@ -1,7 +1,7 @@
 # Agente IA – Negociador de Promesas de Pago
 
 ## Integrantes
-- Almache Bajaña Jinsop Arly (@tu_github)
+- Almache Bajaña Jinsop Arly
 - Mera Ceme Anthony Alexander
 - Freire Silva Freddy Joel
 - Lara Miranda Reny Lenyn
