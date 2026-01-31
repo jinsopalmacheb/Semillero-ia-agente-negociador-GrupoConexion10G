@@ -27,13 +27,6 @@ El agente inicia una conversación, analiza el mensaje del cliente, identifica i
 https://youtu.be/A_rH_kEhuiM
 LINK YOUTUBE
 
-## Link de plataforma donde se puede interactuar el agente con ip publica
-https://agente-negociador-netlife.onrender.com
-
-## Mensajes opcionales para interactuar con el agente
-Buenas tardes, me comprometo a pagar el servicio el 20 de marzo
-Voy a pagar el 5 de abril
-Confirmo pago el 15 de septiembre
 ## Ejecución
 ```bash
 python src/main.py
