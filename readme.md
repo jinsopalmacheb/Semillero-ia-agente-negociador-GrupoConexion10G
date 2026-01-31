@@ -1,7 +1,7 @@
 # Agente IA – Negociador de Promesas de Pago
 
 ## Integrantes
-- Almache Bajaña Jinsop Arly (@tu_github)
+- Almache Bajaña Jinsop Arly
 - Mera Ceme Anthony Alexander
 - Freire Silva Freddy Joel
 - Lara Miranda Reny Lenyn
@@ -24,7 +24,8 @@ Agente inteligente que detecta la intención de pago del cliente y la fecha de c
 El agente inicia una conversación, analiza el mensaje del cliente, identifica intención y fecha, y genera una promesa de pago.
 
 ## Video
-[LINK DEL VIDEO]
+https://youtu.be/A_rH_kEhuiM
+LINK YOUTUBE
 
 ## Ejecución
 ```bash
